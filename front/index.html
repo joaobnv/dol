@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang='pt'>
+
+<head>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <title>DOL</title>
+  <link rel="stylesheet" href="index.css" />
+</head>
+
+<body>
+  <iframe id="page" src=""></iframe>
+  <hr />
+  <span id="page_path"></span>
+  <div><button id="next">Next</button></div>
+  <script defer>
+    document.addEventListener("DOMContentLoaded", function () {
+      current();
+      let nextButton = document.querySelector('#next');
+      nextButton.addEventListener('click', next);
+    });
+
+    async function current(e) {
+      let iframe = document.querySelector('#page');
+      let r = await fetch(`/api/current`);
+      if (!r.ok) {
+        alert(text)
+        return
+      }
+
+      let text = await r.text();
+      document.querySelector('#page_path').textContent = text
+
+      iframe.src = text
+    }
+
+    async function next(e) {
+      let iframe = document.querySelector('#page');
+      let query = new URLSearchParams({ current: iframe.src }).toString();
+      let r = await fetch(`/api/next?${query}`);
+
+      let text = await r.text();
+      if (!r.ok) {
+        alert(text)
+        return
+      }
+      
+      document.querySelector('#page_path').textContent = text
+
+      iframe.src = text
+      iframe.scrollTo({top: 0, left: 0, behavior: "smooth"})
+      window.scrollTo({top: 0, left: 0, behavior: "smooth"})
+    }
+  </script>
+</body>
+
+</html>
